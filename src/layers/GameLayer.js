@@ -519,7 +519,7 @@ class GameLayer extends Layer {
                     this.puertas[0].push(puerta9);
                     this.espacio.agregarCuerpoDinamico(puerta9);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
@@ -538,7 +538,7 @@ class GameLayer extends Layer {
                     this.puertas[1].push(puerta8);
                     this.espacio.agregarCuerpoDinamico(puerta8);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
@@ -557,7 +557,7 @@ class GameLayer extends Layer {
                     this.puertas[2].push(puerta7);
                     this.espacio.agregarCuerpoDinamico(puerta7);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
@@ -576,7 +576,7 @@ class GameLayer extends Layer {
                     this.puertas[3].push(puerta6);
                     this.espacio.agregarCuerpoDinamico(puerta6);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
@@ -595,7 +595,7 @@ class GameLayer extends Layer {
                     this.puertas[4].push(puerta5);
                     this.espacio.agregarCuerpoDinamico(puerta5);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
@@ -614,7 +614,7 @@ class GameLayer extends Layer {
                     this.puertas[5].push(puerta4);
                     this.espacio.agregarCuerpoDinamico(puerta4);
 
-                    // ocultamos el hueco de la puerta
+                    // ocultamos el hueco de la puerta mientras no encuentre la llave
                     var b = new Bloque(imagenes.bloque_relleno, x,y);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
