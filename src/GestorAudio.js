@@ -6,8 +6,7 @@ var soundtrack = {
 var musicaAmbiente;
 
 var efectos = {
-    disparo : "",
-    explosion : "",
+    ataque : "",
 };
 
 function reproducirMusica( srcSoundtrack ) {

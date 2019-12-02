@@ -185,6 +185,7 @@ class Jugador extends Modelo {
                 var ataque = this.orientacionAtaqueArco();
                 this.flechas--;
             }
+
             return ataque;
         }
         else
