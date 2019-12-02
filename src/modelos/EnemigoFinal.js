@@ -1,6 +1,6 @@
 class EnemigoFinal extends Enemigo {
     constructor(x, y) {
-        super(imagenes.link, x, y);
+        super(imagenes.link_oscuro, x, y);
         this.vidas = 3;
         this.golpeado = false;
 
@@ -11,19 +11,19 @@ class EnemigoFinal extends Enemigo {
         this.tiempoRetroceso = 0;
 
         // Animaciones
-        this.aAvanceDerecha = new Animacion(imagenes.link_avance_derecha, this.ancho, this.alto, 4, 2);
-        this.aAvanceIzquierda = new Animacion(imagenes.link_avance_izquierda, this.ancho, this.alto, 4, 2);
-        this.aAvanceArriba = new Animacion(imagenes.link_avance_arriba, this.ancho, this.alto, 4, 2);
-        this.aAvanceAbajo = new Animacion(imagenes.link_avance_abajo, this.ancho, this.alto, 4, 2);
+        this.aAvanceDerecha = new Animacion(imagenes.link_oscuro_avance_derecha, this.ancho, this.alto, 4, 2);
+        this.aAvanceIzquierda = new Animacion(imagenes.link_oscuro_avance_izquierda, this.ancho, this.alto, 4, 2);
+        this.aAvanceArriba = new Animacion(imagenes.link_oscuro_avance_arriba, this.ancho, this.alto, 4, 2);
+        this.aAvanceAbajo = new Animacion(imagenes.link_oscuro_avance_abajo, this.ancho, this.alto, 4, 2);
 
         // Ataque
-        this.aAtaqueDerecha = new Animacion(imagenes.link_ataque_derecha,
+        this.aAtaqueDerecha = new Animacion(imagenes.link_oscuro_ataque_derecha,
             this.ancho, this.alto,4,2,this.finAnimacionAtaque.bind(this));
-        this.aAtaqueIzquierda = new Animacion(imagenes.link_ataque_izquierda,
+        this.aAtaqueIzquierda = new Animacion(imagenes.link_oscuro_ataque_izquierda,
             this.ancho,this.alto,4,2,this.finAnimacionAtaque.bind(this));
-        this.aAtaqueArriba = new Animacion(imagenes.link_ataque_arriba,
+        this.aAtaqueArriba = new Animacion(imagenes.link_oscuro_ataque_arriba,
             this.ancho,this.alto,4,2,this.finAnimacionAtaque.bind(this));
-        this.aAtaqueAbajo = new Animacion(imagenes.link_ataque_abajo,
+        this.aAtaqueAbajo = new Animacion(imagenes.link_oscuro_ataque_abajo,
             this.ancho,this.alto,4,2,this.finAnimacionAtaque.bind(this));
 
         this.animacion = this.aAvanceIzquierda;

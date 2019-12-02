@@ -433,6 +433,12 @@ class GameLayer extends Layer {
                 boss.y = boss.y - boss.alto/2;
                 this.enemigos.push(boss);
                 this.espacio.agregarCuerpoDinamico(boss);
+
+                // Tile debajo de el
+                var sueloCueva = new Bloque(imagenes.puerta, x,y, false);
+                sueloCueva.y = sueloCueva.y - sueloCueva.alto/2;
+                // no lo añadimos al espacio porque es un tile del suelo (jugador tiene que poder estar encima)
+                this.bloques.push(sueloCueva);
                 break;
             case "R":
                 var rupia = new ItemAnimado(imagenes.rupia,imagenes.rupia_animacion,x,y);
