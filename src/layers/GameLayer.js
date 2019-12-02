@@ -6,7 +6,7 @@ class GameLayer extends Layer {
     iniciar() {
         pararMusica();
         reproducirMusica(soundtrack.overworld);
-        this.espacio = new Espacio();
+        this.espacio = new Espacio(0);
 
         this.bloques = [];
         this.fondo = new Fondo(imagenes.fondo,480*0.5,320*0.5);

@@ -149,7 +149,7 @@ class Jugador extends Modelo {
         }
         this.golpeado = true;
         this.tiempoRetroceso = 4;
-        //this.vidas--;
+        this.vidas--;
     }
 
     /**

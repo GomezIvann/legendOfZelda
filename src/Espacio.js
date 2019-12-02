@@ -1,10 +1,18 @@
 class Espacio {
-    constructor() {
+    constructor(gravedad) {
+        this.gravedad = gravedad;
         this.dinamicos = [];
         this.estaticos = [];
     }
     actualizar(){
         for( var i=0; i < this.dinamicos.length; i++){
+            // aplicar gravedad (dinamicos)
+            this.dinamicos[i].vy = this.dinamicos[i].vy + this.gravedad;
+            // maxima velocidad de caida por gravedad
+            if (this.dinamicos[i].vy > 20) {
+                this.dinamicos[i].vy = 20;
+            }
+
             // reiniciar choques
             this.dinamicos[i].choqueAbajo = false;
 
@@ -13,9 +21,7 @@ class Espacio {
             this.moverIzquierda(i);
             this.moverArriba(i);
             this.moverAbajo(i);
-
         }
-
     }
     moverAbajo(i){
         if ( this.dinamicos[i].vy > 0){
@@ -99,10 +105,8 @@ class Espacio {
 
                         movimientoPosible = abajoEstatico - arribaDinamico ;
                     }
-
                 }
             }
-
             this.dinamicos[i].y = this.dinamicos[i].y + movimientoPosible;
             this.dinamicos[i].vy = movimientoPosible;
         }
@@ -139,9 +143,7 @@ class Espacio {
                         // Tenemos que actualizar el movimiento posible a uno menor
                         movimientoPosible = izquierdaEstatico - derechaDinamico ;
                     }
-
                 }
-
             }
             // Ya se han comprobado todos los estáticos
             this.dinamicos[i].x = this.dinamicos[i].x + movimientoPosible;
@@ -149,6 +151,7 @@ class Espacio {
         }
     }
     moverIzquierda(i){
+        // Izquierda
         if ( this.dinamicos[i].vx < 0){
             var movimientoPosible = this.dinamicos[i].vx;
             // El mejor "idealmente" vx partimos de ese
@@ -180,15 +183,12 @@ class Espacio {
                         // Tenemos que actualizar el movimiento posible a uno mayor
                         movimientoPosible = derechaEstatico - izquierdaDinamico ;
                     }
-
                 }
             }
-
             // Ya se han comprobado todos los estaticos
             this.dinamicos[i].x = this.dinamicos[i].x + movimientoPosible;
             this.dinamicos[i].vx = movimientoPosible;
         }
-
     }
     agregarCuerpoDinamico(modelo){
         this.dinamicos.push(modelo);
