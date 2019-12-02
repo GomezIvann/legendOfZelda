@@ -113,7 +113,6 @@ class Jugador extends Modelo {
             // asi evitamos que pierda varias vidas con solo una colision
             // (colisiona da true varias veces hasta que se separan lo suficiente, no es "preciso")
             this.golpeado = false;
-            this.vidas--;
         }
     }
     moverX (direccion){
@@ -149,7 +148,8 @@ class Jugador extends Modelo {
             this.vy = Math.sign(colision.vy)*this.velocidad*this.velocidad;
         }
         this.golpeado = true;
-        this.tiempoRetroceso = 3;
+        this.tiempoRetroceso = 4;
+        //this.vidas--;
     }
 
     /**

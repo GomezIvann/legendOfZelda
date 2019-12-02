@@ -56,6 +56,7 @@ var imagenes = {
     arbol: "res/arbol.png",
     agua: "res/agua.png",
     icono_vida: "res/vida.png",
+    icono_vida_vacia: "res/vida-vacia.png",
     rupia: "res/rupia.png",
     rupia_animacion: "res/rupia-animacion.png",
     icono_rupias: "res/icono-rupias.png",

@@ -36,7 +36,7 @@ class GameLayer extends Layer {
 
         this.cargarMapa("res/"+nivelActual+".txt");
 
-        this.vidasJugador();
+        this.marcadorVidasJugador();
 
         this.scrollX = 0;
         this.scrollY = this.jugador.y - 320 * 0.7;
@@ -116,27 +116,28 @@ class GameLayer extends Layer {
         }
 
         // -----------------------------COLISIONES-----------------------------
-        // colisiones, jugador - enemigo
+        // ¡OJO! Durante el tiempo de retroceso del jugador no puede ser golpeado (Colisiones 1 y 2.1)
+        // 1. Colisiones, jugador - enemigo
         for (var i=0; i < this.enemigos.length; i++){
-            if (this.jugador.colisiona(this.enemigos[i])) {
+            if (this.jugador.colisiona(this.enemigos[i]) && !this.jugador.golpeado) {
                 this.jugador.retrocesoColision(this.enemigos[i]);
-                this.vidas.splice(this.vidas.length-1, 1);
+                this.marcadorVidasJugador();
             }
         }
 
-        // colisiones disparos
+        // 2. Colisiones disparos
         for (var i=0; i < this.disparos.length; i++){
-            // colisiones, disparoEnemigo - jugador
-            if ( this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador() ) {
+            // 2.1. Colisiones, disparoEnemigo - jugador
+            if (this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador() && !this.jugador.golpeado) {
                 this.jugador.retrocesoColision(this.disparos[i]);
-                this.vidas.splice(this.vidas.length-1, 1);
+                this.marcadorVidasJugador();
                 this.espacio
                     .eliminarCuerpoDinamico(this.disparos[i]);
                 this.disparos.splice(i, 1);
                 i--;
             }
 
-            // colisiones, disparoJugador - enemigo
+            // 2.2. Colisiones, disparoJugador - enemigo
             for (var j=0; j < this.enemigos.length; j++){
                 if (this.disparos[i] != null &&
                     this.enemigos[j] != null &&
@@ -144,7 +145,7 @@ class GameLayer extends Layer {
                     this.disparos[i].colisiona(this.enemigos[j]) &&
                     this.disparos[i].isDisparoJugador() ) {
 
-                    this.enemigos[j].retrocesoColision();
+                    // this.enemigos[j].retrocesoColision();
                     this.espacio
                         .eliminarCuerpoDinamico(this.disparos[i]);
                     this.disparos.splice(i, 1);
@@ -160,7 +161,7 @@ class GameLayer extends Layer {
                 }
             }
         }
-        // colisiones, jugador - item
+        // 3. Colisiones, jugador - item
         for (var i=0; i < this.items.length; i++){
             if (this.jugador.colisiona(this.items[i])) {
                 if (this.items[i].isFlecha())
@@ -169,7 +170,7 @@ class GameLayer extends Layer {
                     this.rupiasObtenidas.valor++;
                 else if (this.items[i].isCorazon()) {
                     this.jugador.masVida();
-                    this.vidasJugador();
+                    this.marcadorVidasJugador();
                 }
                 else if (this.items[i].isLlave()) {
                     this.llavesObtenidas.valor++;
@@ -205,10 +206,15 @@ class GameLayer extends Layer {
     /**
      * Actualiza el contador de vidas
      */
-    vidasJugador() {
+    marcadorVidasJugador() {
         for(var i = 0; i < this.jugador.vidas; i++) {
             let x = (480*0.10)+(i*20); // separar vidas
             let vida = new Fondo(imagenes.icono_vida, x,320*0.05);
+            this.vidas.push(vida);
+        }
+        for(var i = this.jugador.vidas; i < this.jugador.maxVidas; i++) {
+            let x = (480*0.10)+(i*20); // separar vidas
+            let vida = new Fondo(imagenes.icono_vida_vacia, x,320*0.05);
             this.vidas.push(vida);
         }
     }
