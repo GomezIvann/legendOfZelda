@@ -4,7 +4,9 @@ class MenuLayer extends Layer {
         this.iniciar();
     }
     iniciar() {
-        reproducirMusica(soundtrack.intro);
+        if (musicaAmbiente!=null)
+            pararMusica();
+        reproducirMusica(soundtrack.intro, true);
         this.fondo =
             new Fondo(imagenes.menu,480*0.5,320*0.5);
     }

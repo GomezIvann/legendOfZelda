@@ -7,7 +7,7 @@ class GameLayer extends Layer {
     }
     iniciar() {
         pararMusica();
-        reproducirMusica(soundtrack.overworld);
+        reproducirMusica(soundtrack.overworld, true);
         this.espacio = new Espacio(0);
 
         this.bloques = [];
@@ -65,8 +65,9 @@ class GameLayer extends Layer {
             saved = false;
 
             if (this.pausa == false) {
-                menuLayer = new MenuLayer();
+                menuLayer.iniciar();
                 layer = menuLayer;
+                return;
             }
         }
 
@@ -230,7 +231,7 @@ class GameLayer extends Layer {
         // lanzamos el mensaje
         this.pausa = true;
         this.mensaje =
-            new Texto(mensajesTexto.victoria, 480/6, 320/2, "", "white");
+            new Texto(mensajesTexto.victoria, 480/5.5, 320/2, "", "white");
     }
 
     /**

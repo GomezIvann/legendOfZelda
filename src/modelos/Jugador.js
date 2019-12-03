@@ -16,7 +16,7 @@ class Jugador extends Modelo {
         this.arco = false;
 
         // Disparo
-        this.cadenciaDisparo = 21;
+        this.cadenciaDisparo = 23;
         this.tiempoDisparo = 0;
 
         // Tiempo de invencibilidad
@@ -24,7 +24,7 @@ class Jugador extends Modelo {
         this.tiempoRetroceso = 36; // 4 iteraciones
 
         // Numero de flechas disponibles
-        this.flechas = 0;
+        this.flechas = 20;
 
         // Animaciones
         this.aAvanceDerecha = new Animacion(imagenes.link_avance_derecha, this.ancho, this.alto, 4, 2);
@@ -198,6 +198,8 @@ class Jugador extends Modelo {
     encuentraTrifuerza() {
         this.animacion = this.aEncuentra;
         this.animacion.actualizar();
+        pararMusica();
+        reproducirMusica(soundtrack.trifuerza_obtenida, false);
     }
 
     /**
