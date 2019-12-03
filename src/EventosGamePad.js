@@ -49,7 +49,7 @@ function actualizarOrdenes(){
 
     if ( gP1.buttons[2].pressed){ // 2 es el botón A
         if ( botonesPulsados[2] == false ) {
-            botonesPulsados[2] = true
+            botonesPulsados[2] = true;
             controles.disparo = true;
             controles.continuar = true;
         }

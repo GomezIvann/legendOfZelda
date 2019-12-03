@@ -1,6 +1,3 @@
-var pulsaciones = []; // actuales registradas
-
-
 var entradas = {}; // tipos
 entradas.pulsaciones = 1;
 entradas.teclado = 2;

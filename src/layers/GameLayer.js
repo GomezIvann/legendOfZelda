@@ -1,6 +1,8 @@
 class GameLayer extends Layer {
     constructor() {
         super();
+        this.mensaje = new Fondo(imagenes.mensaje_como_jugar, 480/2, 320/2);
+        this.pausa = true;
         this.iniciar();
     }
     iniciar() {
@@ -18,13 +20,13 @@ class GameLayer extends Layer {
 
         this.iconoRupias =
             new Fondo(imagenes.icono_rupias,480*0.67,320*0.045);
-        this.rupiasObtenidas = new Texto(0,480*0.7,320*0.07 );
+        this.rupiasObtenidas = new Texto(0,480*0.7,320*0.07, "X");
         this.iconoLlaves =
             new Fondo(imagenes.icono_llaves,480*0.67,320*0.12);
-        this.llavesObtenidas = new Texto(0,480*0.7,320*0.14 );
+        this.llavesObtenidas = new Texto(0,480*0.7,320*0.14,"X");
         this.iconoFlechas =
             new Fondo(imagenes.icono_flechas,480*0.8,320*0.05);
-        this.flechasDisponibles = new Texto(0,480*0.84,320*0.07 );
+        this.flechasDisponibles = new Texto(0,480*0.84,320*0.07,"X");
         this.marcador1 =
             new Fondo(imagenes.marcador1_espada,480*0.48,320*0.075);
         this.espadaMarcador =
@@ -45,11 +47,18 @@ class GameLayer extends Layer {
     }
 
     actualizar (){
-        this.espacio.actualizar();
+        if (this.pausa)
+            return;
 
-        // sin vidas -> reiniciamos
-        if (this.jugador.vidas==0)
+        this.espacio.actualizar();
+        // sin vidas, reiniciamos
+        if (this.jugador.vidas==0) {
+            this.pausa = true;
+            this.mensaje =
+                new Texto("Has perdido...", 480/3, 320/2, "");
+            this.mensaje.dibujar(this.scrollX, this.scrollY);
             this.iniciar();
+        }
 
         if (this.trifuerza.colisiona(this.jugador)){
             nivelActual++;
@@ -292,6 +301,9 @@ class GameLayer extends Layer {
             this.espadaMarcador.dibujar();
         else if (this.jugador.arco)
             this.arcoMarcador.dibujar();
+
+        if ( this.pausa )
+            this.mensaje.dibujar();
     }
 
     /**
@@ -299,6 +311,11 @@ class GameLayer extends Layer {
      * Tampoco si está atacando, hasta que termine la animacion
      */
     procesarControles() {
+        if (controles.continuar) {
+            controles.continuar = false;
+            this.pausa = false;
+        }
+
         if ( !this.jugador.retroceso && this.jugador.estado != estados.atacando ) {
             // abrir puerta
             if (controles.abrir && this.delayPuerta == 0){

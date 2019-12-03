@@ -1,6 +1,7 @@
 // Lista re recursos a precargar
 var cache = [];
 var imagenes = {
+    mensaje_como_jugar: "res/mensaje_como_jugar.png",
     link : "res/link.png",
     link_derecha : "res/link-derecha.png",
     link_izquierda : "res/link-izquierda.png",

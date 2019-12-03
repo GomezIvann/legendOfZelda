@@ -1,6 +1,6 @@
 class Jugador extends Modelo {
     constructor(x, y) {
-        super(imagenes.link , x, y);
+        super(imagenes.link, x, y);
         this.estado = estados.moviendo;
         this.orientacion = orientaciones.derecha;
         this.vidas = 3;
@@ -48,7 +48,7 @@ class Jugador extends Modelo {
         this.aAtaqueAbajo = new Animacion(imagenes.link_ataque_abajo,
             this.ancho,this.alto,4,2,this.finAnimacionAtaque.bind(this));
 
-        this.animacion = this.aAvanceDerecha;
+        this.animacion = this.aDerecha;
     }
     dibujar(scrollX, scrollY){
         scrollX = scrollX || 0;
