@@ -10,7 +10,7 @@ class EnemigoTektike extends Enemigo {
             this.estado = estados.muerto;
         } else {
             if (this.vx == 0) { // choque
-                this.vxInteligencia = this.vxInteligencia * -1;
+                this.vxInteligencia *= -1;
                 this.vx = this.vxInteligencia;
 
                 if (this.orientacion == orientaciones.izquierda)

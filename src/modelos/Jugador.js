@@ -1,6 +1,6 @@
 class Jugador extends Modelo {
     constructor(x, y) {
-        super(imagenes.link , x, y)
+        super(imagenes.link , x, y);
         this.estado = estados.moviendo;
         this.orientacion = orientaciones.derecha;
         this.vidas = 3;
@@ -8,7 +8,8 @@ class Jugador extends Modelo {
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
         this.velocidad = 3;
-        this.golpeado = false;
+        this.retroceso = false; // para elretroceso
+        this.invencible = false; // invencible tras golpe
 
         // Tipos de ataque
         this.espada = true;
@@ -18,8 +19,9 @@ class Jugador extends Modelo {
         this.cadenciaDisparo = 24;
         this.tiempoDisparo = 0;
 
-        // Tiempo en retroceso
-        this.tiempoRetroceso = 0;
+        // Tiempo de invencibilidad
+        this.tiempoInvencible = 0;
+        this.tiempoRetroceso = 36; // 4 iteraciones
 
         // Numero de flechas disponibles
         this.flechas = 0;
@@ -48,12 +50,23 @@ class Jugador extends Modelo {
 
         this.animacion = this.aAvanceDerecha;
     }
+    dibujar(scrollX, scrollY){
+        scrollX = scrollX || 0;
+        scrollY = scrollY || 0;
+        if (this.invencible) {
+            contexto.globalAlpha = 0.5;
+            this.animacion.dibujar(this.x - scrollX, this.y - scrollY);
+            contexto.globalAlpha = 1;
+        }
+        else
+            this.animacion.dibujar(this.x - scrollX, this.y - scrollY);
+    }
     actualizar(){
         this.animacion.actualizar();
 
-        // Establecer orientación SOLO si no ha sido golpeado
-        // Durante el retroceso sigue orientado hacia el mismo sitio (como en cualquier videojuegos)
-        if (!this.golpeado) {
+        // Establecer orientación SOLO si no esta en retroceso
+        // Durante este tiempo sigue orientado hacia el mismo sitio (como en cualquier videojuegos)
+        if (!this.retroceso) {
             if ( this.vx > 0 )
                 this.orientacion = orientaciones.derecha;
             if ( this.vx < 0 )
@@ -106,14 +119,13 @@ class Jugador extends Modelo {
             this.tiempoDisparo--;
 
         // Tiempo Retroceso
-        if ( this.tiempoRetroceso > 0 )
-            this.tiempoRetroceso--;
-        else if (this.tiempoRetroceso == 0 && this.golpeado == true) {
-            // hasta que no termine el retroceso no le quitamos la vida
-            // asi evitamos que pierda varias vidas con solo una colision
-            // (colisiona da true varias veces hasta que se separan lo suficiente, no es "preciso")
-            this.golpeado = false;
-        }
+        if ( this.tiempoInvencible > 0 )
+            this.tiempoInvencible--;
+
+        if (this.tiempoInvencible == this.tiempoRetroceso)
+            this.retroceso = false;
+        else if (this.tiempoInvencible == 0)
+            this.invencible = false;
     }
     moverX (direccion){
         this.vx = direccion * this.velocidad;
@@ -125,19 +137,6 @@ class Jugador extends Modelo {
         if (this.maxVidas > this.vidas)
             this.vidas++;
     }
-
-    /**
-     * Retroceso por colision. Dos posibles situaciones:
-     *      - Jugador en movimiento: sale disparado en direccion opuesta de su movimiento, siempre y cuando su
-     *          orientacion sea opuesta a la del enemigo (va hacia el, sale despedido, como es lógico). Si tienen la misma orientacion
-     *          (direccion contraria)
-     *      - Jugador en estatico: sale disparado en la direccion de aquello que le golpeo
-     *                              (enemigo o disparo)
-     * La velocidad de retroceso es la misma que la de movimiento.
-     * Cuando esta en retroceso su orientacion no cambiar, para eso:
-     *      this.golpeado = true;
-     * Dura muy pocos frames
-     */
     retrocesoColision(colision) {
         if ( (this.vx != 0 || this.vy != 0) // en movimiento
             && !this.porDetras(colision)) {
@@ -147,8 +146,9 @@ class Jugador extends Modelo {
             this.vx = Math.sign(colision.vx)*this.velocidad*this.velocidad;
             this.vy = Math.sign(colision.vy)*this.velocidad*this.velocidad;
         }
-        this.golpeado = true;
-        this.tiempoRetroceso = 4;
+        this.retroceso = true;
+        this.invencible = true;
+        this.tiempoInvencible = 40;
         this.vidas--;
     }
 
@@ -179,13 +179,13 @@ class Jugador extends Modelo {
             this.estado = estados.atacando;
             this.tiempoDisparo = this.cadenciaDisparo;
 
+            var ataque = null;
             if (this.espada)
-                var ataque = this.orientacionAtaqueEspada();
+                ataque = this.orientacionAtaqueEspada();
             else if (this.arco && this.flechas > 0) {
-                var ataque = this.orientacionAtaqueArco();
+                ataque = this.orientacionAtaqueArco();
                 this.flechas--;
             }
-
             return ataque;
         }
         else
@@ -252,10 +252,5 @@ class Jugador extends Modelo {
             flecha.vx = 0;
         }
         return flecha;
-    }
-    dibujar (scrollX, scrollY) {
-        scrollX = scrollX || 0;
-        scrollY = scrollY || 0;
-        this.animacion.dibujar(this.x - scrollX, this.y - scrollY);
     }
 }

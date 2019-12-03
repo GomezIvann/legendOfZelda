@@ -77,7 +77,6 @@ class GameLayer extends Layer {
         for (var j=0; j < this.enemigos.length; j++){
             if ( this.enemigos[j] != null &&
                 this.enemigos[j].estado == estados.muerto  ) {
-
                 this.espacio
                     .eliminarCuerpoDinamico(this.enemigos[j]);
                 this.enemigos.splice(j, 1);
@@ -99,8 +98,9 @@ class GameLayer extends Layer {
         this.jugador.actualizar();
 
         for (var i=0; i < this.enemigos.length; i++){
-            this.enemigos[i].actualizar();
             this.enemigos[i].perseguir(this.jugador.x, this.jugador.y);
+            this.enemigos[i].actualizar();
+
             // Comprobar si a ese enemigo le toca atacar, si es el caso añadir
             var disparo = this.enemigos[i].disparar();
             if (disparo != null) {
@@ -116,10 +116,10 @@ class GameLayer extends Layer {
         }
 
         // -----------------------------COLISIONES-----------------------------
-        // ¡OJO! Durante el tiempo de retroceso del jugador no puede ser golpeado (Colisiones 1 y 2.1)
+        // ¡OJO! Durante el tiempo de invencibilidad del jugador no puede ser atacado (invencible=true) (Colisiones 1 y 2.1)
         // 1. Colisiones, jugador - enemigo
         for (var i=0; i < this.enemigos.length; i++){
-            if (this.jugador.colisiona(this.enemigos[i]) && !this.jugador.golpeado) {
+            if (this.jugador.colisiona(this.enemigos[i]) && !this.jugador.invencible) {
                 this.jugador.retrocesoColision(this.enemigos[i]);
                 this.marcadorVidasJugador();
             }
@@ -128,7 +128,7 @@ class GameLayer extends Layer {
         // 2. Colisiones disparos
         for (var i=0; i < this.disparos.length; i++){
             // 2.1. Colisiones, disparoEnemigo - jugador
-            if (this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador() && !this.jugador.golpeado) {
+            if (this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador() && !this.jugador.invencible) {
                 this.jugador.retrocesoColision(this.disparos[i]);
                 this.marcadorVidasJugador();
                 this.espacio
@@ -145,7 +145,6 @@ class GameLayer extends Layer {
                     this.disparos[i].colisiona(this.enemigos[j]) &&
                     this.disparos[i].isDisparoJugador() ) {
 
-                    // this.enemigos[j].retrocesoColision();
                     this.espacio
                         .eliminarCuerpoDinamico(this.disparos[i]);
                     this.disparos.splice(i, 1);
@@ -296,11 +295,11 @@ class GameLayer extends Layer {
     }
 
     /**
-     * Si ha sido golpeado, durante el tiempo de retroceso, no se puede controlar a link
+     * Si el Jugador ha sido golpeado, durante el tiempo de retroceso, no se puede controlar a Link
      * Tampoco si está atacando, hasta que termine la animacion
      */
     procesarControles() {
-        if (!this.jugador.golpeado && this.jugador.estado != estados.atacando ) {
+        if ( !this.jugador.retroceso && this.jugador.estado != estados.atacando ) {
             // abrir puerta
             if (controles.abrir && this.delayPuerta == 0){
                 for (var i=0; i < this.puertas.length; i++){
@@ -433,12 +432,6 @@ class GameLayer extends Layer {
                 boss.y = boss.y - boss.alto/2;
                 this.enemigos.push(boss);
                 this.espacio.agregarCuerpoDinamico(boss);
-
-                // Tile debajo de el
-                var sueloCueva = new Bloque(imagenes.puerta, x,y, false);
-                sueloCueva.y = sueloCueva.y - sueloCueva.alto/2;
-                // no lo añadimos al espacio porque es un tile del suelo (jugador tiene que poder estar encima)
-                this.bloques.push(sueloCueva);
                 break;
             case "R":
                 var rupia = new ItemAnimado(imagenes.rupia,imagenes.rupia_animacion,x,y);

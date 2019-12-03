@@ -2,13 +2,9 @@ class EnemigoFinal extends Enemigo {
     constructor(x, y) {
         super(imagenes.link_oscuro, x, y);
         this.vidas = 3;
-        this.golpeado = false;
-
-        // Disparo
-        this.cadencia = 30;
-
-        // Tiempo en retroceso
-        this.tiempoRetroceso = 0;
+        this.cadencia = 30; // cadencia de disparo
+        this.vy = 0;
+        this.vx = 0;
 
         // Animaciones
         this.aAvanceDerecha = new Animacion(imagenes.link_oscuro_avance_derecha, this.ancho, this.alto, 4, 2);
@@ -17,6 +13,7 @@ class EnemigoFinal extends Enemigo {
         this.aAvanceAbajo = new Animacion(imagenes.link_oscuro_avance_abajo, this.ancho, this.alto, 4, 2);
 
         // Ataque
+        this.aAbajo = new Animacion(imagenes.link_oscuro, this.ancho, this.alto, 4, 1);
         this.aAtaqueDerecha = new Animacion(imagenes.link_oscuro_ataque_derecha,
             this.ancho, this.alto,4,2,this.finAnimacionAtaque.bind(this));
         this.aAtaqueIzquierda = new Animacion(imagenes.link_oscuro_ataque_izquierda,
@@ -26,23 +23,24 @@ class EnemigoFinal extends Enemigo {
         this.aAtaqueAbajo = new Animacion(imagenes.link_oscuro_ataque_abajo,
             this.ancho,this.alto,4,2,this.finAnimacionAtaque.bind(this));
 
-        this.animacion = this.aAvanceIzquierda;
-        this.vyInteligencia = 1;
-        this.vxInteligencia = 1;
+        this.animacion = this.aAbajo;
+        this.orientacion = orientaciones.abajo;
+        this.vyInteligencia = 2;
+        this.vxInteligencia = 2;
+        this.distanciaJugador = 70;
+        this.modoBusqueda = false;
     }
     actualizar (){
         this.animacion.actualizar();
 
-        if (!this.golpeado) {
-            if ( this.vx > 0 )
-                this.orientacion = orientaciones.derecha;
-            if ( this.vx < 0 )
-                this.orientacion = orientaciones.izquierda;
-            if ( this.vy > 0 && this.vx == 0 )
-                this.orientacion = orientaciones.abajo;
-            if ( this.vy < 0 && this.vx == 0 )
-                this.orientacion = orientaciones.arriba;
-        }
+        if ( this.vx > 0 )
+            this.orientacion = orientaciones.derecha;
+        if ( this.vx < 0 )
+            this.orientacion = orientaciones.izquierda;
+        if ( this.vy > 0 && this.vx == 0 )
+            this.orientacion = orientaciones.abajo;
+        if ( this.vy < 0 && this.vx == 0 )
+            this.orientacion = orientaciones.arriba;
 
         switch (this.estado) {
             case estados.atacando:
@@ -73,38 +71,43 @@ class EnemigoFinal extends Enemigo {
 
         if (this.estado == estados.muriendo) {
             this.vx = 0;
+            this.vy = 0;
             this.estado = estados.muerto;
         }
 
         // Tiempo Disparo
         if ( this.cadencia > 0 )
             this.cadencia--;
-
-        // Tiempo Retroceso
-        if ( this.tiempoRetroceso > 0 )
-            this.tiempoRetroceso--;
-        else if (this.tiempoRetroceso == 0 && this.golpeado == true) {
-            this.golpeado = false;
-            this.vidas--;
-        }
     }
+
+    /**
+     * Cuando el jugador se acerca al jefe final, se activa el modo busqueda
+     * (comienza a perseguirle)
+     * @param jugadorX
+     * @param jugadorY
+     */
     perseguir(jugadorX, jugadorY) {
         var diffX = jugadorX - this.x;
         var diffY = jugadorY - this.y;
 
-        this.vx = Math.sign(diffX) * this.vxInteligencia;
-        this.vy = Math.sign(diffY) * this.vyInteligencia;
-    }
-    retrocesoColision() {
-        this.vx = this.vx*-this.velocidad;
-        this.vy = this.vy*-this.velocidad;
-        this.golpeado = true;
-        this.tiempoRetroceso = 3;
+        if (this.modoBusqueda){
+            if (diffX != 0 && diffY != 0) { // reducir velocidad en diagonal (si no se hace imposible esquivar)
+                this.vxInteligencia=1.5;
+                this.vyInteligencia=1.5;
+            }
+            this.vx = Math.sign(diffX) * this.vxInteligencia;
+            this.vy = Math.sign(diffY) * this.vyInteligencia;
+            this.vxInteligencia=2;
+            this.vyInteligencia=2;
+        }
+        else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
+            && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador){
+
+            this.modoBusqueda=true;
+        }
     }
     disparar(){
-        if (this.cadencia == 0 && this.estado == estados.moviendo) {
-            this.vx = 0;
-            this.vy = 0;
+        if (this.cadencia == 0 && this.estado == estados.moviendo && this.modoBusqueda) {
             this.estado = estados.atacando;
             this.cadencia = 30;
             return this.orientacionAtaque();

@@ -7,6 +7,7 @@ class Enemigo extends Modelo {
         this.estado = estados.moviendo;
         this.orientacion = orientaciones.izquierda;
         this.animacion = null;
+        // Por defecto un enemigo solo se mueve en el eje x
         this.vxInteligencia = -1;
         this.vx = this.vxInteligencia;
         this.vyInteligencia = 0;
@@ -20,7 +21,6 @@ class Enemigo extends Modelo {
     impactado() {
         if (this.estado != estados.muriendo)
             this.estado = estados.muriendo;
-
         return this.itemAlMorir();
     }
 
@@ -46,5 +46,4 @@ class Enemigo extends Modelo {
 
     disparar() {return null;}
     perseguir(jugadorX, jugadorY) {}
-    retrocesoColision() {}
 }
