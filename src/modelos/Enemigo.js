@@ -11,7 +11,7 @@ class Enemigo extends Modelo {
         this.velocidadInteligencia = -1;
         this.vx = this.velocidadInteligencia;
         this.vy = 0;
-        this.vidas=1;
+        this.vidas = 1; // por defecto un enemigo muere de un golpe
     }
     dibujar (scrollX, scrollY) {
         scrollX = scrollX || 0;

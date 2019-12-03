@@ -26,9 +26,9 @@ class EnemigoFinal extends Enemigo {
         this.animacion = this.aAbajo;
         this.orientacion = orientaciones.abajo;
         this.velocidadInteligencia = 2;
-        this.vidas = 5; // tiene mas vida que un enemigo normal
+        this.vidas = 6; // tiene mas vida que un enemigo normal
         this.distanciaJugador = 100;
-        this.modoBusqueda = false;
+        this.modoCombate = false;
     }
     actualizar (){
         this.animacion.actualizar();
@@ -76,12 +76,12 @@ class EnemigoFinal extends Enemigo {
         }
 
         // Tiempo Disparo (para que no empiece disparando)
-        if ( this.cadencia > 0 && this.modoBusqueda)
+        if ( this.cadencia > 0 && this.modoCombate)
             this.cadencia--;
     }
 
     /**
-     * Cuando el jugador se acerca al jefe final, se activa el modo busqueda
+     * Cuando el jugador se acerca al jefe final, se activa el modo combate
      * (comienza a perseguirle)
      * @param jugadorX
      * @param jugadorY
@@ -90,7 +90,7 @@ class EnemigoFinal extends Enemigo {
         var diffX = jugadorX - this.x;
         var diffY = jugadorY - this.y;
 
-        if (this.modoBusqueda){
+        if (this.modoCombate){
             if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace imposible esquivar)
                 this.velocidadInteligencia=1.5;
 
@@ -99,15 +99,15 @@ class EnemigoFinal extends Enemigo {
             this.velocidadInteligencia=1.5;
         }
         else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
-            && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador){
+            && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador) {
 
-            this.modoBusqueda=true;
+            this.modoCombate=true;
             return true;
         }
         return false;
     }
-    disparar(){
-        if (this.cadencia == 0 && this.estado == estados.moviendo && this.modoBusqueda) {
+    disparar() {
+        if (this.cadencia == 0 && this.estado == estados.moviendo && this.modoCombate) {
             this.estado = estados.atacando;
             this.cadencia = 30;
             return this.orientacionAtaque();
@@ -116,6 +116,16 @@ class EnemigoFinal extends Enemigo {
             return null;
     }
 
+    /**
+     * Lo sobreescribimos respecto a Enemigo.js
+     * Si no esta en modo Combate no pierde vida
+     * @returns {null|*}
+     */
+    impactado() {
+        if(this.modoCombate)
+            return super.impactado();
+        return null;
+    }
     /**
      * El boss final deja la trifuerza!!
      * @returns {*}
