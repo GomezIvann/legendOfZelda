@@ -20,13 +20,13 @@ class GameLayer extends Layer {
 
         this.iconoRupias =
             new Fondo(imagenes.icono_rupias,480*0.67,320*0.045);
-        this.rupiasObtenidas = new Texto(0,480*0.7,320*0.07, "X");
+        this.rupiasObtenidas = new Texto(0,480*0.7,320*0.07,"X","white");
         this.iconoLlaves =
             new Fondo(imagenes.icono_llaves,480*0.67,320*0.12);
-        this.llavesObtenidas = new Texto(0,480*0.7,320*0.14,"X");
+        this.llavesObtenidas = new Texto(0,480*0.7,320*0.14,"X","white");
         this.iconoFlechas =
             new Fondo(imagenes.icono_flechas,480*0.8,320*0.05);
-        this.flechasDisponibles = new Texto(0,480*0.84,320*0.07,"X");
+        this.flechasDisponibles = new Texto(0,480*0.84,320*0.07,"X","white");
         this.marcador1 =
             new Fondo(imagenes.marcador1_espada,480*0.48,320*0.075);
         this.espadaMarcador =
@@ -42,11 +42,11 @@ class GameLayer extends Layer {
 
         this.scrollX = 0;
         this.scrollY = this.jugador.y - 320 * 0.7;
-
+        this.trifuerzaObtenida=false;
         this.delayPuerta = 5;
     }
 
-    actualizar (){
+    actualizar() {
         if (this.pausa)
             return;
 
@@ -55,19 +55,19 @@ class GameLayer extends Layer {
         if (this.jugador.vidas==0) {
             this.pausa = true;
             this.mensaje =
-                new Texto("Has perdido...", 480/3, 320/2, "");
-            this.mensaje.dibujar(this.scrollX, this.scrollY);
+                new Texto(mensajesTexto.derrota, 480/3.25, 320/2, "", "red");
             this.iniciar();
         }
 
-        if (this.trifuerza.colisiona(this.jugador)){
-            nivelActual++;
-            if (nivelActual > nivelMaximo)
-                nivelActual = 0;
+        if (this.trifuerzaObtenida){
             // hemos de ponerlo a false para que al cargar el siguiente mapa
             // no aparezca en la posición del punto de salvado
             saved = false;
-            this.iniciar();
+
+            if (this.pausa == false) {
+                menuLayer = new MenuLayer();
+                layer = menuLayer;
+            }
         }
 
         if ( this.savePoint.colisiona(this.jugador) )
@@ -107,7 +107,12 @@ class GameLayer extends Layer {
         this.jugador.actualizar();
 
         for (var i=0; i < this.enemigos.length; i++){
-            this.enemigos[i].perseguir(this.jugador.x, this.jugador.y);
+            if (this.enemigos[i].perseguir(this.jugador.x, this.jugador.y)){
+                this.pausa = true;
+                this.mensaje =
+                    new Texto(mensajesTexto.enemigoModoCombate, 480/7, 320/2, "","red");
+            }
+
             this.enemigos[i].actualizar();
 
             // Comprobar si a ese enemigo le toca atacar, si es el caso añadir
@@ -161,7 +166,7 @@ class GameLayer extends Layer {
 
                     var item = this.enemigos[j].impactado();
 
-                    // A VECES al ser impactado el enemigo suelta un item (cuando muere)
+                    // A VECES al morir el enemigo suelta un item (cuando muere)
                     if (item != null) {
                         this.items.push(item);
                         this.espacio.agregarCuerpoDinamico(item);
@@ -172,21 +177,30 @@ class GameLayer extends Layer {
         // 3. Colisiones, jugador - item
         for (var i=0; i < this.items.length; i++){
             if (this.jugador.colisiona(this.items[i])) {
-                if (this.items[i].isFlecha())
-                    this.jugador.flechas+=5;
-                else if (this.items[i].isRupia())
+                if (this.items[i].isFlecha()) {
+                    this.jugador.flechas += 5;
+                    this.items.splice(i, 1);
+                    i--;
+                }
+                else if (this.items[i].isRupia()) {
                     this.rupiasObtenidas.valor++;
+                    this.items.splice(i, 1);
+                    i--;
+                }
                 else if (this.items[i].isCorazon()) {
                     this.jugador.masVida();
                     this.marcadorVidasJugador();
+                    this.items.splice(i, 1);
+                    i--;
                 }
                 else if (this.items[i].isLlave()) {
                     this.llavesObtenidas.valor++;
                     this.abrirPuerta(this.items[i].id);
+                    this.items.splice(i, 1);
+                    i--;
                 }
-
-                this.items.splice(i, 1);
-                i--;
+                else if (this.items[i].isTrifuerza())
+                    this.victoria(i);
             }
         }
 
@@ -199,14 +213,35 @@ class GameLayer extends Layer {
     }
 
     /**
-     * Abre la puerta correspondiente a la llave encontrada
+     * Consigue la victoria:
+     *      1. Animacion encuentra de Jugador
+     *      2. Ajustamos la posicion de la trifuerza para que salga encima de link
+     *      3. Pausamos el juego
+     *      4. Lanzamos el mensaje
+     */
+    victoria(i){
+        this.trifuerzaObtenida=true;
+        this.jugador.encuentraTrifuerza();
+
+        // para que salga encima de link
+        this.items[i].x = this.jugador.x;
+        this.items[i].y = this.jugador.y-25;
+
+        // lanzamos el mensaje
+        this.pausa = true;
+        this.mensaje =
+            new Texto(mensajesTexto.victoria, 480/6, 320/2, "", "white");
+    }
+
+    /**
+     * Abre las puertas correspondientes a la llave encontrada
      * @param id de la puerta encontrada
      */
     abrirPuerta(id){
         for (var i=0; i < this.puertas.length; i++) {
             if ( i==id ) {
-                this.puertas[i][0].abrir();
-                this.puertas[i][1].abrir();
+                this.puertas[i][0].abierta = true;
+                this.puertas[i][1].abierta = true;
             }
         }
     }
@@ -261,7 +296,6 @@ class GameLayer extends Layer {
         for (var i=0; i < this.bloques.length; i++){
             this.bloques[i].dibujar(this.scrollX, this.scrollY);
         }
-        this.trifuerza.dibujar(this.scrollX, this.scrollY);
         if (!saved) // dibujar solo si no ha colisionado con el punto de salvado
             this.savePoint.dibujar(this.scrollX, this.scrollY);
 
@@ -307,8 +341,9 @@ class GameLayer extends Layer {
     }
 
     /**
-     * Si el Jugador ha sido golpeado, durante el tiempo de retroceso, no se puede controlar a Link
-     * Tampoco si está atacando, hasta que termine la animacion
+     * Si el Jugador ha sido golpeado, durante el tiempo de retroceso, no se puede controlar a Link.
+     * Tampoco si está atacando, hasta que termine la animacion.
+     * En pausa no se procesan los controles (solo Enter para comenzar).
      */
     procesarControles() {
         if (controles.continuar) {
@@ -316,16 +351,16 @@ class GameLayer extends Layer {
             this.pausa = false;
         }
 
-        if ( !this.jugador.retroceso && this.jugador.estado != estados.atacando ) {
+        if ( !this.jugador.retroceso && this.jugador.estado != estados.atacando && !this.pausa ) {
             // abrir puerta
             if (controles.abrir && this.delayPuerta == 0){
                 for (var i=0; i < this.puertas.length; i++){
-                    if ( this.puertas[i][0] != null && this.jugador.colisiona(this.puertas[i][0])) {
+                    if ( this.puertas[i][0] != null && this.puertas[i][0].abierta && this.jugador.colisiona(this.puertas[i][0])) {
                         this.jugador.x = this.puertas[i][1].x;
                         this.jugador.y = this.puertas[i][1].y;
                         this.delayPuerta = 5;
                     }
-                    else if ( this.puertas[i][1] != null && this.jugador.colisiona(this.puertas[i][1])) {
+                    else if ( this.puertas[i][1] != null && this.puertas[i][0].abierta && this.jugador.colisiona(this.puertas[i][1])) {
                         this.jugador.x = this.puertas[i][0].x;
                         this.jugador.y = this.puertas[i][0].y;
                         this.delayPuerta = 5;
@@ -405,12 +440,6 @@ class GameLayer extends Layer {
 
     cargarObjetoMapa(simboloAnterior, simbolo, x, y) {
         switch(simbolo) {
-            case "3":
-                this.trifuerza = new Bloque(imagenes.copa, x,y);
-                // modificación para empezar a contar desde el suelo
-                this.trifuerza.y = this.trifuerza.y - this.trifuerza.alto/2;
-                this.espacio.agregarCuerpoDinamico(this.trifuerza);
-                break;
             case "A":
                 this.savePoint = new Bloque(imagenes.savePoint, x,y);
                 this.savePoint.y = this.savePoint.y - this.savePoint.alto/2;
@@ -449,6 +478,12 @@ class GameLayer extends Layer {
                 boss.y = boss.y - boss.alto/2;
                 this.enemigos.push(boss);
                 this.espacio.agregarCuerpoDinamico(boss);
+
+                // tile debajo, si no queda un hueco
+                var sueloCueva = new Bloque(imagenes.puerta, x,y, false);
+                sueloCueva.y = sueloCueva.y - sueloCueva.alto/2;
+                // no lo añadimos al espacio porque es un tile del suelo
+                this.bloques.push(sueloCueva);
                 break;
             case "R":
                 var rupia = new ItemAnimado(imagenes.rupia,imagenes.rupia_animacion,x,y);

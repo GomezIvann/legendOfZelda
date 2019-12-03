@@ -6,6 +6,7 @@ var imagenes = {
     link_derecha : "res/link-derecha.png",
     link_izquierda : "res/link-izquierda.png",
     link_arriba : "res/link-arriba.png",
+    link_encuentra : "res/link-encuentra.png",
     link_oscuro : "res/link-oscuro/link.png",
     link_oscuro_derecha : "res/link-oscuro/link-derecha.png",
     link_oscuro_izquierda : "res/link-oscuro/link-izquierda.png",
@@ -83,6 +84,8 @@ var imagenes = {
     corazon: "res/corazon.png",
     corazon_animado: "res/corazon-animacion.png",
     llave: "res/llave.png",
+    trifuerza: "res/trifuerza.png",
+    trifuerza_animacion: "res/trifuerza-animacion.png"
 };
 
 var rutasImagenes = Object.values(imagenes);

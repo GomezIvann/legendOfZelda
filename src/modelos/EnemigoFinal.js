@@ -3,7 +3,7 @@ class EnemigoFinal extends Enemigo {
         super(imagenes.link_oscuro, x, y);
         this.vidas = 3;
         this.cadencia = 30; // cadencia de disparo
-        this.vy = 0;
+        this.vy = 0; // parado hasta que jugador < distanciaJugador
         this.vx = 0;
 
         // Animaciones
@@ -25,9 +25,9 @@ class EnemigoFinal extends Enemigo {
 
         this.animacion = this.aAbajo;
         this.orientacion = orientaciones.abajo;
-        this.vyInteligencia = 2;
-        this.vxInteligencia = 2;
-        this.distanciaJugador = 70;
+        this.velocidadInteligencia = 2;
+        this.vidas = 5; // tiene mas vida que un enemigo normal
+        this.distanciaJugador = 100;
         this.modoBusqueda = false;
     }
     actualizar (){
@@ -75,8 +75,8 @@ class EnemigoFinal extends Enemigo {
             this.estado = estados.muerto;
         }
 
-        // Tiempo Disparo
-        if ( this.cadencia > 0 )
+        // Tiempo Disparo (para que no empiece disparando)
+        if ( this.cadencia > 0 && this.modoBusqueda)
             this.cadencia--;
     }
 
@@ -91,20 +91,20 @@ class EnemigoFinal extends Enemigo {
         var diffY = jugadorY - this.y;
 
         if (this.modoBusqueda){
-            if (diffX != 0 && diffY != 0) { // reducir velocidad en diagonal (si no se hace imposible esquivar)
-                this.vxInteligencia=1.5;
-                this.vyInteligencia=1.5;
-            }
-            this.vx = Math.sign(diffX) * this.vxInteligencia;
-            this.vy = Math.sign(diffY) * this.vyInteligencia;
-            this.vxInteligencia=2;
-            this.vyInteligencia=2;
+            if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace imposible esquivar)
+                this.velocidadInteligencia=1.5;
+
+            this.vx = Math.sign(diffX) * this.velocidadInteligencia;
+            this.vy = Math.sign(diffY) * this.velocidadInteligencia;
+            this.velocidadInteligencia=1.5;
         }
         else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
             && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador){
 
             this.modoBusqueda=true;
+            return true;
         }
+        return false;
     }
     disparar(){
         if (this.cadencia == 0 && this.estado == estados.moviendo && this.modoBusqueda) {
@@ -114,6 +114,15 @@ class EnemigoFinal extends Enemigo {
         }
         else
             return null;
+    }
+
+    /**
+     * El boss final deja la trifuerza!!
+     * @returns {*}
+     */
+    itemAlMorir() {
+        var trifuerza = new ItemAnimado(imagenes.trifuerza,imagenes.trifuerza_animacion,this.x,this.y);
+        return trifuerza;
     }
     finAnimacionAtaque(){
         this.estado = estados.moviendo;

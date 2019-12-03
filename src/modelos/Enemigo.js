@@ -8,10 +8,10 @@ class Enemigo extends Modelo {
         this.orientacion = orientaciones.izquierda;
         this.animacion = null;
         // Por defecto un enemigo solo se mueve en el eje x
-        this.vxInteligencia = -1;
-        this.vx = this.vxInteligencia;
-        this.vyInteligencia = 0;
-        this.vy = this.vyInteligencia;
+        this.velocidadInteligencia = -1;
+        this.vx = this.velocidadInteligencia;
+        this.vy = 0;
+        this.vidas=1;
     }
     dibujar (scrollX, scrollY) {
         scrollX = scrollX || 0;
@@ -19,9 +19,13 @@ class Enemigo extends Modelo {
         this.animacion.dibujar(this.x - scrollX, this.y - scrollY);
     }
     impactado() {
-        if (this.estado != estados.muriendo)
+        if(this.vidas > 0)
+            this.vidas--;
+        if (this.vidas == 0 && this.estado != estados.muriendo) {
             this.estado = estados.muriendo;
-        return this.itemAlMorir();
+            return this.itemAlMorir();
+        }
+        return null;
     }
 
     /**
@@ -32,18 +36,19 @@ class Enemigo extends Modelo {
         var item = null;
         if (random == 1) {
             item = new ItemAnimado(imagenes.corazon,imagenes.corazon_animado,this.x,this.y);
+            item.y = item.y - item.alto/2;
         }
         else if (random == 2) {
             item = new ItemAnimado(imagenes.rupia,imagenes.rupia_animacion,this.x,this.y);
+            item.y = item.y - item.alto/2;
         }
         else if (random == 3) {
             item = new Item(imagenes.flecha_arriba,this.x,this.y);
+            item.y = item.y - item.alto/2;
         }
-
-        item.y = item.y - item.alto/2;
         return item;
     }
 
     disparar() {return null;}
-    perseguir(jugadorX, jugadorY) {}
+    perseguir(jugadorX, jugadorY) {return false;}
 }

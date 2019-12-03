@@ -8,15 +8,15 @@ class Jugador extends Modelo {
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
         this.velocidad = 3;
-        this.retroceso = false; // para elretroceso
-        this.invencible = false; // invencible tras golpe
+        this.retroceso = false; // para el retroceso
+        this.invencible = false; // invencible tras un golpe
 
         // Tipos de ataque
         this.espada = true;
         this.arco = false;
 
         // Disparo
-        this.cadenciaDisparo = 24;
+        this.cadenciaDisparo = 21;
         this.tiempoDisparo = 0;
 
         // Tiempo de invencibilidad
@@ -33,6 +33,7 @@ class Jugador extends Modelo {
         this.aAvanceAbajo = new Animacion(imagenes.link_avance_abajo, this.ancho, this.alto, 4, 2);
 
         // vx = 0
+        this.aEncuentra = new Animacion(imagenes.link_encuentra, this.ancho, this.alto, 4, 1);
         this.aDerecha = new Animacion(imagenes.link_derecha, this.ancho, this.alto, 4, 1);
         this.aIzquierda = new Animacion(imagenes.link_izquierda, this.ancho, this.alto, 4, 1);
         this.aArriba = new Animacion(imagenes.link_arriba, this.ancho, this.alto, 4, 1);
@@ -193,6 +194,10 @@ class Jugador extends Modelo {
     }
     finAnimacionAtaque(){
         this.estado = estados.moviendo;
+    }
+    encuentraTrifuerza() {
+        this.animacion = this.aEncuentra;
+        this.animacion.actualizar();
     }
 
     /**

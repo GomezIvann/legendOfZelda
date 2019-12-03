@@ -3,7 +3,4 @@ class Puerta extends Modelo {
         super(imagenes.puerta, x, y);
         this.abierta = false;
     }
-    abrir() {
-        this.abierta = true;
-    }
 }

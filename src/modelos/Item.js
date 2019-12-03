@@ -17,4 +17,7 @@ class Item extends Modelo {
     isLlave(){
         return this.img == imagenes.llave;
     }
+    isTrifuerza(){
+        return this.img == imagenes.trifuerza;
+    }
 }

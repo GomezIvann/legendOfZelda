@@ -15,8 +15,8 @@ class EnemigoOctorok extends Enemigo {
         this.animacion = this.aIzquierda;
 
         this.cadencia = 20;
-        this.vxInteligencia = -2;
-        this.vx = this.vxInteligencia;
+        this.velocidadInteligencia = -2;
+        this.vx = this.velocidadInteligencia;
     }
     disparar() {
         if (this.cadencia == 0 && this.estado == estados.moviendo) {
@@ -73,8 +73,8 @@ class EnemigoOctorok extends Enemigo {
                 else
                     this.orientacion = orientaciones.izquierda;
 
-                this.vxInteligencia = this.vxInteligencia * -1;
-                this.vx = this.vxInteligencia;
+                this.velocidadInteligencia = this.velocidadInteligencia * -1;
+                this.vx = this.velocidadInteligencia;
             }
         }
 

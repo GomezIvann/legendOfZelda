@@ -19,8 +19,8 @@ class EnemigoSalvaje extends Enemigo {
         this.animacion = this.aIzquierda;
 
         this.cadencia = 50;
-        this.vxInteligencia = -2;
-        this.vx = this.vxInteligencia;
+        this.velocidadInteligencia = -2;
+        this.vx = this.velocidadInteligencia;
     }
     /**
      * Cuando termina de girar tiene que:
@@ -29,8 +29,8 @@ class EnemigoSalvaje extends Enemigo {
      *      3. Poner  estado = moviendo para la animacion
      */
     finAnimacionGirar() {
-        this.vxInteligencia *= -1;
-        this.vx = this.vxInteligencia;
+        this.velocidadInteligencia *= -1;
+        this.vx = this.velocidadInteligencia;
         if (this.orientacion == orientaciones.izquierda)
             this.orientacion = orientaciones.derecha;
         else
