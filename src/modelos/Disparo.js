@@ -8,15 +8,12 @@ class Disparo extends Modelo {
         this.orientacion = direccion;
     }
     actualizar() {}
-
-    /**
-     * true si es un disparo del jugador (2 tipos: espada o arco)
-     * @returns {boolean}
-     */
     isDisparoJugador() {
         return this.img == imagenes.espada_derecha || this.img == imagenes.flecha_derecha;
     }
-
+    isAtaqueEspada() {
+        return this.img == imagenes.espada_derecha;
+    }
     /**
      * Disparo sin velocidad
      * @returns {boolean}

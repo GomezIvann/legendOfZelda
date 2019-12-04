@@ -67,6 +67,7 @@ class GameLayer extends Layer {
             }
         }
 
+        // -----------------------------ELIMINAR-----------------------------
         // Eliminar disparos sin velocidad y ataque espada si toca
         for (var i=0; i < this.disparos.length; i++){
             if ( this.disparos[i] != null && this.disparos[i].destroy() ){
@@ -76,14 +77,14 @@ class GameLayer extends Layer {
                 i--;
             }
         }
-        // Enemigos muertos fuera del juego
-        for (var j=0; j < this.enemigos.length; j++){
-            if ( this.enemigos[j] != null &&
-                this.enemigos[j].estado == estados.muerto  ) {
+        // Enemigos muertos se eliminan
+        for (var i=0; i < this.enemigos.length; i++){
+            if ( this.enemigos[i] != null &&
+                this.enemigos[i].estado == estados.muerto  ) {
                 this.espacio
-                    .eliminarCuerpoDinamico(this.enemigos[j]);
-                this.enemigos.splice(j, 1);
-                j--;
+                    .eliminarCuerpoDinamico(this.enemigos[i]);
+                this.enemigos.splice(i, 1);
+                i--;
             }
         }
         // Eliminar disparos fuera de pantalla
@@ -93,6 +94,16 @@ class GameLayer extends Layer {
                 this.espacio
                     .eliminarCuerpoDinamico(this.disparos[i]);
                 this.disparos.splice(i, 1);
+                i--;
+            }
+        }
+        // Eliminar bloques destruidos
+        for (var i=0; i < this.bloques.length; i++){
+            if ( this.bloques[i] != null &&
+                this.bloques[i].destruido){
+                this.espacio
+                    .eliminarCuerpoEstatico(this.bloques[i]);
+                this.bloques.splice(i, 1);
                 i--;
             }
         }
@@ -165,6 +176,20 @@ class GameLayer extends Layer {
                         this.items.push(item);
                         this.espacio.agregarCuerpoDinamico(item);
                     }
+                }
+            }
+
+            // 2.3. Colisiones, disparoJugador - tile destruible
+            for (var j=0; j < this.bloques.length; j++){
+                if (this.disparos[i] != null && this.bloques[j] != null &&
+                    this.disparos[i].colisiona(this.bloques[j]) &&
+                    this.disparos[i].isAtaqueEspada() && this.bloques[j].destruible ) {
+
+                    this.bloques[j].destruido = true;
+                    this.espacio
+                        .eliminarCuerpoDinamico(this.disparos[i]);
+                    this.disparos.splice(i, 1);
+                    i--;
                 }
             }
         }
@@ -510,7 +535,7 @@ class GameLayer extends Layer {
                 this.bloques.push(sueloCueva);
                 break;
             case "P":
-                var agua = new Bloque(imagenes.agua, x, y, true);
+                var agua = new Bloque(imagenes.agua, x, y, false);
                 agua.y = agua.y - agua.alto/2;
                 this.bloques.push(agua);
                 var puente = new Bloque(imagenes.puente, x,y, false);
@@ -519,25 +544,25 @@ class GameLayer extends Layer {
                 this.bloques.push(puente);
                 break;
             case "@":
-                var bloqueID = new Bloque(imagenes.bloque_inferior_derecha, x,y, true);
+                var bloqueID = new Bloque(imagenes.bloque_inferior_derecha, x,y, false);
                 bloqueID.y = bloqueID.y - bloqueID.alto/2;
                 this.bloques.push(bloqueID);
                 this.espacio.agregarCuerpoEstatico(bloqueID);
                 break;
             case "%":
-                var bloqueSD = new Bloque(imagenes.bloque_superior_derecha, x,y, true);
+                var bloqueSD = new Bloque(imagenes.bloque_superior_derecha, x,y, false);
                 bloqueSD.y = bloqueSD.y - bloqueSD.alto/2;
                 this.bloques.push(bloqueSD);
                 this.espacio.agregarCuerpoEstatico(bloqueSD);
                 break;
             case "&":
-                var bloqueII = new Bloque(imagenes.bloque_inferior_izquierda, x,y, true);
+                var bloqueII = new Bloque(imagenes.bloque_inferior_izquierda, x,y, false);
                 bloqueII.y = bloqueII.y - bloqueII.alto/2;
                 this.bloques.push(bloqueII);
                 this.espacio.agregarCuerpoEstatico(bloqueII);
                 break;
             case "$":
-                var bloqueSI = new Bloque(imagenes.bloque_superior_izquierda, x,y, true);
+                var bloqueSI = new Bloque(imagenes.bloque_superior_izquierda, x,y, false);
                 bloqueSI.y = bloqueSI.y - bloqueSI.alto/2;
                 this.bloques.push(bloqueSI);
                 this.espacio.agregarCuerpoEstatico(bloqueSI);
@@ -549,7 +574,7 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoEstatico(arbol);
                 break;
             case ",":
-                var agua = new Bloque(imagenes.agua, x, y, true);
+                var agua = new Bloque(imagenes.agua, x, y, false);
                 agua.y = agua.y - agua.alto/2;
                 this.bloques.push(agua);
                 this.espacio.agregarCuerpoEstatico(agua);
@@ -568,7 +593,7 @@ class GameLayer extends Layer {
                     this.espacio.agregarCuerpoDinamico(puerta9);
 
                     // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
+                    var b = new Bloque(imagenes.bloque_relleno, x,y, false);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
                 }
@@ -587,7 +612,7 @@ class GameLayer extends Layer {
                     this.espacio.agregarCuerpoDinamico(puerta8);
 
                     // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
+                    var b = new Bloque(imagenes.bloque_relleno, x, y, false);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
                 }
@@ -606,7 +631,7 @@ class GameLayer extends Layer {
                     this.espacio.agregarCuerpoDinamico(puerta7);
 
                     // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
+                    var b = new Bloque(imagenes.bloque_relleno, x, y, false);
                     b.y = b.y - b.alto/2;
                     this.bloques.push(b);
                 }
