@@ -30,9 +30,10 @@ class Enemigo extends Modelo {
 
     /**
      * Deja un item al morir
+     * Mas probable que no deje nada
      */
     itemAlMorir() {
-        var random = Math.floor(Math.random() * 4) + 1;  // number en [1-4]
+        var random = Math.floor(Math.random() * 6) + 1;  // number en [1-6]
         var item = null;
         if (random == 1) {
             item = new ItemAnimado(imagenes.corazon,imagenes.corazon_animado,this.x,this.y);

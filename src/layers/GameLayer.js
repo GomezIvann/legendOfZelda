@@ -60,19 +60,12 @@ class GameLayer extends Layer {
         }
 
         if (this.trifuerzaObtenida){
-            // hemos de ponerlo a false para que al cargar el siguiente mapa
-            // no aparezca en la posición del punto de salvado
-            saved = false;
-
             if (this.pausa == false) {
                 menuLayer.iniciar();
                 layer = menuLayer;
                 return;
             }
         }
-
-        if ( this.savePoint.colisiona(this.jugador) )
-            saved = true;
 
         // Eliminar disparos sin velocidad y ataque espada si toca
         for (var i=0; i < this.disparos.length; i++){
@@ -297,8 +290,6 @@ class GameLayer extends Layer {
         for (var i=0; i < this.bloques.length; i++){
             this.bloques[i].dibujar(this.scrollX, this.scrollY);
         }
-        if (!saved) // dibujar solo si no ha colisionado con el punto de salvado
-            this.savePoint.dibujar(this.scrollX, this.scrollY);
 
         // Primero que el jugador, si no saldría por detrás de las puertas!!
         // Dibujar solo puertas abiertas
@@ -441,11 +432,6 @@ class GameLayer extends Layer {
 
     cargarObjetoMapa(simboloAnterior, simbolo, x, y) {
         switch(simbolo) {
-            case "A":
-                this.savePoint = new Bloque(imagenes.savePoint, x,y);
-                this.savePoint.y = this.savePoint.y - this.savePoint.alto/2;
-                this.espacio.agregarCuerpoDinamico(this.savePoint);
-                break;
             case "T":
                 var tektike = new EnemigoTektike(x,y);
                 tektike.y = tektike.y - tektike.alto/2;
@@ -465,13 +451,8 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoDinamico(enemigoS);
                 break;
             case "1":
-                if (saved) // si ha alcanzado el punto de guardado empieza desde el
-                    this.jugador = new Jugador(this.savePoint.x, this.savePoint.y+3);
-                    // sumamos 3 por la diferencia de px entre el sprite de jugador y el de la moneda
-                else {
-                    this.jugador = new Jugador(x, y);
-                    this.jugador.y = this.jugador.y - this.jugador.alto/2;
-                }
+                this.jugador = new Jugador(x, y);
+                this.jugador.y = this.jugador.y - this.jugador.alto/2;
                 this.espacio.agregarCuerpoDinamico(this.jugador);
                 break;
             case "B":
@@ -528,6 +509,15 @@ class GameLayer extends Layer {
                 // no lo añadimos al espacio porque es un tile del suelo (jugador tiene que poder estar encima)
                 this.bloques.push(sueloCueva);
                 break;
+            case "P":
+                var agua = new Bloque(imagenes.agua, x, y, true);
+                agua.y = agua.y - agua.alto/2;
+                this.bloques.push(agua);
+                var puente = new Bloque(imagenes.puente, x,y, false);
+                puente.y = puente.y - puente.alto/2;
+                // no lo añadimos al espacio porque es un tile del suelo (jugador tiene que poder estar encima)
+                this.bloques.push(puente);
+                break;
             case "@":
                 var bloqueID = new Bloque(imagenes.bloque_inferior_derecha, x,y, true);
                 bloqueID.y = bloqueID.y - bloqueID.alto/2;
@@ -553,13 +543,13 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoEstatico(bloqueSI);
                 break;
             case "*":
-                var arbol = new Bloque(imagenes.arbol, x,y, true);
+                var arbol = new Bloque(imagenes.arbol, x, y, true);
                 arbol.y = arbol.y - arbol.alto/2;
                 this.bloques.push(arbol);
                 this.espacio.agregarCuerpoEstatico(arbol);
                 break;
             case ",":
-                var agua = new Bloque(imagenes.agua, x,y, true);
+                var agua = new Bloque(imagenes.agua, x, y, true);
                 agua.y = agua.y - agua.alto/2;
                 this.bloques.push(agua);
                 this.espacio.agregarCuerpoEstatico(agua);
@@ -622,61 +612,26 @@ class GameLayer extends Layer {
                 }
                 break;
             case "6":
-                if (simboloAnterior == "L") {
-                    var llave6 = new Item(imagenes.llave,x,y);
-                    llave6.id = 3;
-                    llave6.y = llave6.y - llave6.alto/2;
-                    this.items.push(llave6);
-                    this.espacio.agregarCuerpoDinamico(llave6);
-                } else {
-                    var puerta6 = new Puerta(x,y);
-                    puerta6.y = puerta6.y - puerta6.alto/2;
-                    this.puertas[3].push(puerta6);
-                    this.espacio.agregarCuerpoDinamico(puerta6);
-
-                    // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
-                    b.y = b.y - b.alto/2;
-                    this.bloques.push(b);
-                }
+                // puerta normal desbloqueada
+                var puerta6 = new Puerta(x,y);
+                puerta6.abierta = true;
+                puerta6.y = puerta6.y - puerta6.alto/2;
+                this.puertas[3].push(puerta6);
+                this.espacio.agregarCuerpoDinamico(puerta6);
                 break;
             case "5":
-                if (simboloAnterior == "L") {
-                    var llave5 = new Item(imagenes.llave,x,y);
-                    llave5.id = 4;
-                    llave5.y = llave5.y - llave5.alto/2;
-                    this.items.push(llave5);
-                    this.espacio.agregarCuerpoDinamico(llave5);
-                } else {
-                    var puerta5 = new Puerta(x,y);
-                    puerta5.y = puerta5.y - puerta5.alto/2;
-                    this.puertas[4].push(puerta5);
-                    this.espacio.agregarCuerpoDinamico(puerta5);
-
-                    // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
-                    b.y = b.y - b.alto/2;
-                    this.bloques.push(b);
-                }
+                var puerta5 = new Puerta(x,y);
+                puerta5.abierta = true;
+                puerta5.y = puerta5.y - puerta5.alto/2;
+                this.puertas[4].push(puerta5);
+                this.espacio.agregarCuerpoDinamico(puerta5);
                 break;
             case "4":
-                if (simboloAnterior == "L") {
-                    var llave4 = new Item(imagenes.llave,x,y);
-                    llave4.id = 5;
-                    llave4.y = llave4.y - llave4.alto/2;
-                    this.items.push(llave4);
-                    this.espacio.agregarCuerpoDinamico(llave4);
-                } else {
-                    var puerta4 = new Puerta(x,y);
-                    puerta4.y = puerta4.y - puerta4.alto/2;
-                    this.puertas[5].push(puerta4);
-                    this.espacio.agregarCuerpoDinamico(puerta4);
-
-                    // ocultamos el hueco de la puerta mientras no encuentre la llave
-                    var b = new Bloque(imagenes.bloque_relleno, x,y);
-                    b.y = b.y - b.alto/2;
-                    this.bloques.push(b);
-                }
+                var puerta4 = new Puerta(x,y);
+                puerta4.abierta = true;
+                puerta4.y = puerta4.y - puerta4.alto/2;
+                this.puertas[5].push(puerta4);
+                this.espacio.agregarCuerpoDinamico(puerta4);
                 break;
         }
     }

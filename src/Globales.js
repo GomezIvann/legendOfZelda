@@ -4,11 +4,8 @@ entradas.teclado = 2;
 entradas.gamepad = 3;
 var entrada = entradas.pulsaciones;
 
-
 var nivelActual = 0;
 var nivelMaximo = 2;
-
-var saved = false;
 
 var estados = {};
 estados.moviendo = 2; // Incluye parado, derecha , izquierda

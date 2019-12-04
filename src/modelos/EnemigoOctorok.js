@@ -14,7 +14,7 @@ class EnemigoOctorok extends Enemigo {
         // Ref a la animación actual
         this.animacion = this.aIzquierda;
 
-        this.cadencia = 20;
+        this.cadencia = 40;
         this.velocidadInteligencia = -2;
         this.vx = this.velocidadInteligencia;
     }
@@ -25,21 +25,12 @@ class EnemigoOctorok extends Enemigo {
                 disparo.x += 20;
                 disparo.vy = 0;
             }
-            if (this.orientacion == orientaciones.izquierda) { // izquierda
+            else { // izquierda
                 disparo.x -= 20;
                 disparo.vx = disparo.vx * -1;
                 disparo.vy = 0;
             }
-            else if (this.orientacion == orientaciones.arriba) { // arriba
-                disparo.y += 20;
-                disparo.vx = 0;
-                disparo.vy = disparo.vy * -1;
-            }
-            else if (this.orientacion == orientaciones.abajo) { // abajo
-                disparo.y -= 20;
-                disparo.vx = 0;
-            }
-            this.cadencia = 50;
+            this.cadencia = 40; // reinciar
             return disparo;
         }
         return null;
@@ -54,12 +45,6 @@ class EnemigoOctorok extends Enemigo {
                 if (this.orientacion == orientaciones.izquierda) {
                     this.animacion = this.aIzquierda;
                 }
-                if (this.orientacion == orientaciones.arriba) {
-                    this.animacion = this.aArriba;
-                }
-                if (this.orientacion == orientaciones.abajo) {
-                    this.animacion = this.aAbajo;
-                }
         }
 
         if (this.estado == estados.muriendo) {
@@ -73,7 +58,7 @@ class EnemigoOctorok extends Enemigo {
                 else
                     this.orientacion = orientaciones.izquierda;
 
-                this.velocidadInteligencia = this.velocidadInteligencia * -1;
+                this.velocidadInteligencia *= -1;
                 this.vx = this.velocidadInteligencia;
             }
         }

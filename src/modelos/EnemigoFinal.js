@@ -35,11 +35,11 @@ class EnemigoFinal extends Enemigo {
 
         if ( this.vx > 0 )
             this.orientacion = orientaciones.derecha;
-        if ( this.vx < 0 )
+        else if ( this.vx < 0 )
             this.orientacion = orientaciones.izquierda;
-        if ( this.vy > 0 && this.vx == 0 )
+        else if ( this.vy > 0 && this.vx == 0 )
             this.orientacion = orientaciones.abajo;
-        if ( this.vy < 0 && this.vx == 0 )
+        else if ( this.vy < 0 && this.vx == 0 )
             this.orientacion = orientaciones.arriba;
 
         switch (this.estado) {
