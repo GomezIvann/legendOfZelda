@@ -90,13 +90,13 @@ class EnemigoFinal extends Enemigo {
         var diffX = jugadorX - this.x;
         var diffY = jugadorY - this.y;
 
-        if (this.modoCombate){
+        if (this.modoCombate) {
             if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace imposible esquivar)
-                this.velocidadInteligencia=1.5;
+                this.velocidadInteligencia = 1.5;
 
             this.vx = Math.sign(diffX) * this.velocidadInteligencia;
             this.vy = Math.sign(diffY) * this.velocidadInteligencia;
-            this.velocidadInteligencia=1.5;
+            this.velocidadInteligencia = 2;
         }
         else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
             && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador) {

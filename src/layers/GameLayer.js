@@ -535,9 +535,11 @@ class GameLayer extends Layer {
                 this.bloques.push(sueloCueva);
                 break;
             case "P":
+                // agua debajo del puente
                 var agua = new Bloque(imagenes.agua, x, y, false);
                 agua.y = agua.y - agua.alto/2;
                 this.bloques.push(agua);
+
                 var puente = new Bloque(imagenes.puente, x,y, false);
                 puente.y = puente.y - puente.alto/2;
                 // no lo añadimos al espacio porque es un tile del suelo (jugador tiene que poder estar encima)
@@ -562,7 +564,7 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoEstatico(bloqueII);
                 break;
             case "$":
-                var bloqueSI = new Bloque(imagenes.bloque_superior_izquierda, x,y, false);
+                var bloqueSI = new Bloque(imagenes.bloque_superior_izquierda, x, y, false);
                 bloqueSI.y = bloqueSI.y - bloqueSI.alto/2;
                 this.bloques.push(bloqueSI);
                 this.espacio.agregarCuerpoEstatico(bloqueSI);

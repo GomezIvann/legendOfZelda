@@ -2,7 +2,8 @@ class EnemigoTektike extends Enemigo {
     constructor(x, y) {
         super(imagenes.tektike, x, y);
         this.animacion = new Animacion(imagenes.tektike_animacion, this.ancho, this.alto, 4, 2);
-        this.velocidadInteligencia = -2;
+        this.velocidadInteligencia = 2.5;
+        this.vy = -this.velocidadInteligencia;
         this.vx = this.velocidadInteligencia;
     }
     actualizar (){
@@ -10,8 +11,13 @@ class EnemigoTektike extends Enemigo {
         if (this.estado == estados.muriendo) {
             this.vx = 0;
             this.estado = estados.muerto;
-        } else {
-            if (this.vx == 0) { // choque
+        }
+        else {
+            if (this.vy == 0) {
+                this.velocidadInteligencia *= -1;
+                this.vy = this.velocidadInteligencia;
+            }
+            else if (this.vx == 0) {
                 this.velocidadInteligencia *= -1;
                 this.vx = this.velocidadInteligencia;
 
