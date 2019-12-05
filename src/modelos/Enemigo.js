@@ -31,10 +31,10 @@ class Enemigo extends Modelo {
 
     /**
      * Los enemigos dejan un item al morir (a veces)
-     * Es mas probable que no deje nada
+     * Es mas probable que no deje nada (40% objeto 60% nada)
      */
     itemAlMorir() {
-        var random = Math.floor(Math.random() * 8) + 1;  // numero entre [1-7]
+        var random = Math.floor(Math.random() * 7.5) + 1;  // numero entre [1-7]
         var item = null;
         if (random == 1) {
             item = new ItemAnimado(imagenes.corazon,imagenes.corazon_animado,this.x,this.y);
