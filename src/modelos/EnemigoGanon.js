@@ -1,9 +1,10 @@
-class EnemigoFinal extends Enemigo {
+class EnemigoGanon extends Enemigo {
     constructor(x, y) {
         super(imagenes.link_oscuro, x, y);
-        this.vidas = 3;
         this.cadencia = 30; // cadencia de disparo
-        this.vy = 0; // parado hasta que jugador < distanciaJugador
+        // parado hasta que jugador < distanciaJugador
+        this.velocidadInteligencia = 2;
+        this.vy = 0;
         this.vx = 0;
 
         // Animaciones
@@ -25,7 +26,6 @@ class EnemigoFinal extends Enemigo {
 
         this.animacion = this.aAbajo;
         this.orientacion = orientaciones.abajo;
-        this.velocidadInteligencia = 2;
         this.vidas = 6; // tiene mas vida que un enemigo normal
         this.distanciaJugador = 100;
         this.modoCombate = false;
@@ -75,13 +75,14 @@ class EnemigoFinal extends Enemigo {
             this.estado = estados.muerto;
         }
 
-        // Tiempo Disparo (para que no empiece disparando)
+        // Tiempo Disparo (empieza a contar en modoCombate para que no arranque disparando)
         if ( this.cadencia > 0 && this.modoCombate)
             this.cadencia--;
     }
 
     /**
      * Cuando el jugador se acerca al jefe final, se activa el modo combate
+     * Una vez en modo combate le sigue sin cesar
      * (comienza a perseguirle)
      * @param jugadorX
      * @param jugadorY
@@ -91,12 +92,12 @@ class EnemigoFinal extends Enemigo {
         var diffY = jugadorY - this.y;
 
         if (this.modoCombate) {
-            if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace imposible esquivar)
+            if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace muy dificil esquivar)
                 this.velocidadInteligencia = 1.5;
 
             this.vx = Math.sign(diffX) * this.velocidadInteligencia;
             this.vy = Math.sign(diffY) * this.velocidadInteligencia;
-            this.velocidadInteligencia = 2;
+            this.velocidadInteligencia = 2; // poner de nuevo normal tras calculo
         }
         else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
             && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador) {
@@ -127,7 +128,7 @@ class EnemigoFinal extends Enemigo {
         return null;
     }
     /**
-     * El boss final deja la trifuerza!!
+     * Ganon deja la trifuerza!!
      * @returns {*}
      */
     itemAlMorir() {

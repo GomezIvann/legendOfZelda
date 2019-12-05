@@ -11,7 +11,8 @@ class Enemigo extends Modelo {
         this.velocidadInteligencia = -1;
         this.vx = this.velocidadInteligencia;
         this.vy = 0;
-        this.vidas = 1; // por defecto un enemigo muere de un golpe
+        // Por defecto un enemigo muere de un golpe
+        this.vidas = 1;
     }
     dibujar (scrollX, scrollY) {
         scrollX = scrollX || 0;
@@ -19,7 +20,7 @@ class Enemigo extends Modelo {
         this.animacion.dibujar(this.x - scrollX, this.y - scrollY);
     }
     impactado() {
-        if(this.vidas > 0)
+        if (this.vidas > 0)
             this.vidas--;
         if (this.vidas == 0 && this.estado != estados.muriendo) {
             this.estado = estados.muriendo;
@@ -29,11 +30,11 @@ class Enemigo extends Modelo {
     }
 
     /**
-     * Deja un item al morir
-     * Mas probable que no deje nada
+     * Los enemigos dejan un item al morir (a veces)
+     * Es mas probable que no deje nada
      */
     itemAlMorir() {
-        var random = Math.floor(Math.random() * 6) + 1;  // number en [1-6]
+        var random = Math.floor(Math.random() * 8) + 1;  // numero entre [1-7]
         var item = null;
         if (random == 1) {
             item = new ItemAnimado(imagenes.corazon,imagenes.corazon_animado,this.x,this.y);

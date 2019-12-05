@@ -14,30 +14,30 @@ class GameLayer extends Layer {
         this.fondo = new Fondo(imagenes.fondo,480*0.5,320*0.5);
         this.enemigos = [];
         this.items = [];
-        this.puertas = [[],[],[],[],[],[]]; // puerta9: [0][0-1], puerta8: [1][0-1], puerta7 [2][0-1]...
+        this.puertas = [[],[],[],[],[],[]];      // puerta9: [0][0-1], puerta8: [1][0-1], puerta7 [2][0-1]...
         this.disparos = [];
         this.vidas = [];
 
+        this.textoVida = new Texto("-Vida-",480*0.02,320*0.07,"","red");
         this.iconoRupias =
-            new Fondo(imagenes.icono_rupias,480*0.67,320*0.045);
-        this.rupiasObtenidas = new Texto(0,480*0.7,320*0.07,"X","white");
+            new Fondo(imagenes.icono_rupias,480*0.73,320*0.045);
+        this.rupiasObtenidas = new Texto(0,480*0.76,320*0.07,"X","white");
         this.iconoLlaves =
-            new Fondo(imagenes.icono_llaves,480*0.67,320*0.12);
-        this.llavesObtenidas = new Texto(0,480*0.7,320*0.14,"X","white");
+            new Fondo(imagenes.icono_llaves,480*0.73,320*0.12);
+        this.llavesObtenidas = new Texto(0,480*0.76,320*0.14,"X","white");
         this.iconoFlechas =
-            new Fondo(imagenes.icono_flechas,480*0.8,320*0.05);
-        this.flechasDisponibles = new Texto(0,480*0.84,320*0.07,"X","white");
+            new Fondo(imagenes.icono_flechas,480*0.86,320*0.05);
+        this.flechasDisponibles = new Texto(0,480*0.9,320*0.07,"X","white");
         this.marcador1 =
-            new Fondo(imagenes.marcador1_espada,480*0.48,320*0.075);
+            new Fondo(imagenes.marcador1_espada,480*0.54,320*0.075);
         this.espadaMarcador =
-            new Fondo(imagenes.espada_arriba,480*0.48,320*0.088);
+            new Fondo(imagenes.espada_arriba,480*0.54,320*0.088);
         this.marcador2 =
-            new Fondo(imagenes.marcador2_arco,480*0.58,320*0.075);
+            new Fondo(imagenes.marcador2_arco,480*0.64,320*0.075);
         this.arcoMarcador =
-            new Fondo(imagenes.arco,480*0.58,320*0.088);
+            new Fondo(imagenes.arco,480*0.64,320*0.088);
 
         this.cargarMapa("res/"+nivelActual+".txt");
-
         this.marcadorVidasJugador();
 
         this.scrollX = 0;
@@ -51,6 +51,7 @@ class GameLayer extends Layer {
             return;
 
         this.espacio.actualizar();
+
         // sin vidas, reiniciamos
         if (this.jugador.vidas==0) {
             this.pausa = true;
@@ -58,7 +59,6 @@ class GameLayer extends Layer {
                 new Texto(mensajesTexto.derrota, 480/3.25, 320/2, "", "red");
             this.iniciar();
         }
-
         if (this.trifuerzaObtenida){
             if (this.pausa == false) {
                 menuLayer.iniciar();
@@ -110,17 +110,15 @@ class GameLayer extends Layer {
 
         // -----------------------------ACTUALIZAR-----------------------------
         this.jugador.actualizar();
-
         for (var i=0; i < this.enemigos.length; i++){
             if (this.enemigos[i].perseguir(this.jugador.x, this.jugador.y)){
                 this.pausa = true;
                 this.mensaje =
                     new Texto(mensajesTexto.enemigoModoCombate, 480/7, 320/2, "","red");
             }
-
             this.enemigos[i].actualizar();
 
-            // Comprobar si a ese enemigo le toca atacar, si es el caso añadir
+            // Comprobar si a ese enemigo le toca atacar, si es el caso añadir disparo
             var disparo = this.enemigos[i].disparar();
             if (disparo != null) {
                 this.espacio.agregarCuerpoDinamico(disparo);
@@ -135,20 +133,23 @@ class GameLayer extends Layer {
         }
 
         // -----------------------------COLISIONES-----------------------------
-        // ¡OJO! Durante el tiempo de invencibilidad del jugador no puede ser atacado (invencible=true) (Colisiones 1 y 2.1)
+        // ¡OJO! Durante el tiempo que es invencible el jugador no puede ser dañado (Colisiones 1 y 2.1)
         // 1. Colisiones, jugador - enemigo
-        for (var i=0; i < this.enemigos.length; i++){
+        for (var i=0; i < this.enemigos.length; i++) {
             if (this.jugador.colisiona(this.enemigos[i]) && !this.jugador.invencible) {
-                this.jugador.retrocesoColision(this.enemigos[i]);
+                this.jugador.golpeado(this.enemigos[i]);
                 this.marcadorVidasJugador();
             }
         }
 
-        // 2. Colisiones disparos
-        for (var i=0; i < this.disparos.length; i++){
+        // 2. Colisiones, disparos
+        for (var i=0; i < this.disparos.length; i++) {
+
             // 2.1. Colisiones, disparoEnemigo - jugador
-            if (this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador() && !this.jugador.invencible) {
-                this.jugador.retrocesoColision(this.disparos[i]);
+            if (this.jugador.colisiona(this.disparos[i]) && !this.disparos[i].isDisparoJugador()
+                && !this.jugador.invencible) {
+
+                this.jugador.golpeado(this.disparos[i]);
                 this.marcadorVidasJugador();
                 this.espacio
                     .eliminarCuerpoDinamico(this.disparos[i]);
@@ -270,12 +271,12 @@ class GameLayer extends Layer {
      */
     marcadorVidasJugador() {
         for(var i = 0; i < this.jugador.vidas; i++) {
-            let x = (480*0.10)+(i*20); // separar vidas
+            let x = (480*0.23)+(i*20); // separar vidas
             let vida = new Fondo(imagenes.icono_vida, x,320*0.05);
             this.vidas.push(vida);
         }
         for(var i = this.jugador.vidas; i < this.jugador.maxVidas; i++) {
-            let x = (480*0.10)+(i*20); // separar vidas
+            let x = (480*0.23)+(i*20); // separar vidas
             let vida = new Fondo(imagenes.icono_vida_vacia, x,320*0.05);
             this.vidas.push(vida);
         }
@@ -340,6 +341,7 @@ class GameLayer extends Layer {
         for (var i=0; i < this.vidas.length; i++ ){
             this.vidas[i].dibujar();
         }
+        this.textoVida.dibujar();
         this.iconoRupias.dibujar();
         this.rupiasObtenidas.dibujar();
         this.iconoLlaves.dibujar();
@@ -358,9 +360,10 @@ class GameLayer extends Layer {
     }
 
     /**
-     * Si el Jugador ha sido golpeado, durante el tiempo de retroceso, no se puede controlar a Link.
-     * Tampoco si está atacando, hasta que termine la animacion.
-     * En pausa no se procesan los controles (solo Enter para comenzar).
+     * ¡OJO! NO SE PROCESAN LOS CONTROLES CUANDO:
+     *      - El Jugador ha sido golpeado, durante el tiempo de retroceso, no puede controlar a Link.
+     *      - El Jugador está atacando, hasta que termine la animacion.
+     *      - En pausa no se procesan los controles (solo Enter para comenzar).
      */
     procesarControles() {
         if (controles.continuar) {
@@ -469,19 +472,13 @@ class GameLayer extends Layer {
                 this.enemigos.push(octorok);
                 this.espacio.agregarCuerpoDinamico(octorok);
                 break;
-            case "S":
-                var enemigoS = new EnemigoSalvaje(x,y);
-                enemigoS.y = enemigoS.y - enemigoS.alto/2;
-                this.enemigos.push(enemigoS);
-                this.espacio.agregarCuerpoDinamico(enemigoS);
-                break;
             case "1":
                 this.jugador = new Jugador(x, y);
                 this.jugador.y = this.jugador.y - this.jugador.alto/2;
                 this.espacio.agregarCuerpoDinamico(this.jugador);
                 break;
             case "B":
-                var boss = new EnemigoFinal(x,y);
+                var boss = new EnemigoGanon(x,y);
                 boss.y = boss.y - boss.alto/2;
                 this.enemigos.push(boss);
                 this.espacio.agregarCuerpoDinamico(boss);
@@ -647,6 +644,7 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoDinamico(puerta6);
                 break;
             case "5":
+                // puerta normal desbloqueada
                 var puerta5 = new Puerta(x,y);
                 puerta5.abierta = true;
                 puerta5.y = puerta5.y - puerta5.alto/2;
@@ -654,6 +652,7 @@ class GameLayer extends Layer {
                 this.espacio.agregarCuerpoDinamico(puerta5);
                 break;
             case "4":
+                // puerta normal desbloqueada
                 var puerta4 = new Puerta(x,y);
                 puerta4.abierta = true;
                 puerta4.y = puerta4.y - puerta4.alto/2;

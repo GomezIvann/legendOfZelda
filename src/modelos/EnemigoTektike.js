@@ -2,7 +2,7 @@ class EnemigoTektike extends Enemigo {
     constructor(x, y) {
         super(imagenes.tektike, x, y);
         this.animacion = new Animacion(imagenes.tektike_animacion, this.ancho, this.alto, 4, 2);
-        this.velocidadInteligencia = 2.5;
+        this.velocidadInteligencia = 2;
         this.vy = -this.velocidadInteligencia;
         this.vx = this.velocidadInteligencia;
     }
@@ -26,6 +26,7 @@ class EnemigoTektike extends Enemigo {
                 else
                     this.orientacion = orientaciones.izquierda;
             }
+
         }
     }
 }

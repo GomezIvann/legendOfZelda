@@ -1,7 +1,6 @@
 // Lista re recursos a precargar
 var cache = [];
 var imagenes = {
-    mensaje_como_jugar: "res/mensaje_como_jugar.png",
     link : "res/link.png",
     link_derecha : "res/link-derecha.png",
     link_izquierda : "res/link-izquierda.png",
@@ -51,15 +50,7 @@ var imagenes = {
     bloque_superior_izquierda: "res/bloque-superior-izquierda.png",
     puente: "res/puente.png",
     menu : "res/menu.png",
-    salvaje: "res/salvaje.png",
-    salvaje_mov_izquierda: "res/salvaje_izquierda.png",
-    salvaje_mov_derecha: "res/salvaje_derecha.png",
-    salvaje_giro_der: "res/salvaje_giro_hacia_der.png",
-    salvaje_giro_izq: "res/salvaje_giro_hacia_izq.png",
-    salvaje_muerte_izq: "res/salvaje_muerte_izq.png",
-    salvaje_muerte_der: "res/salvaje_muerte_der.png",
-    disparo_lanza_der: "res/lanzaDer.png",
-    disparo_lanza_izq: "res/lanzaIzq.png",
+    mensaje_como_jugar: "res/mensaje_como_jugar.png",
     octorok: "res/octorok.png",
     octorok_derecha: "res/octorok-derecha.png",
     octorok_izquierda: "res/octorok-izquierda.png",

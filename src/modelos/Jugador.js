@@ -5,10 +5,11 @@ class Jugador extends Modelo {
         this.orientacion = orientaciones.derecha;
         this.vidas = 3;
         this.maxVidas = 5; // maximo de vidas permitido
+        this.velocidad = 3;
         this.vx = 0; // velocidadX
         this.vy = 0; // velocidadY
-        this.velocidad = 3;
-        this.retroceso = false; // para el retroceso
+
+        this.retroceso = false; // esta en retroceso
         this.invencible = false; // invencible tras un golpe
 
         // Tipos de ataque
@@ -21,7 +22,7 @@ class Jugador extends Modelo {
 
         // Tiempo de invencibilidad
         this.tiempoInvencible = 0;
-        this.tiempoRetroceso = 36; // 4 iteraciones
+        this.tiempoRetroceso = 36; // (40 it. de invencibilidad, las 4 primeras es el retroceso, de ahi el valor 36)
 
         // Numero de flechas disponibles
         this.flechas = 0;
@@ -138,7 +139,16 @@ class Jugador extends Modelo {
         if (this.maxVidas > this.vidas)
             this.vidas++;
     }
-    retrocesoColision(colision) {
+
+    /**
+     * Se ejecuta al ser golpeado:
+     *      - Si estaba en movimiento el retroceso es en direccion contraria
+     *      - Si es golpeado por detras o en estatico el retroceso es en la direccion de lo que le golpeo
+     * Se activa la invencibilidad y el retroceso.
+     * Pierde una vida
+     * @param colision
+     */
+    golpeado(colision) {
         if ( (this.vx != 0 || this.vy != 0) // en movimiento
             && !this.porDetras(colision)) {
             this.vx *= -this.velocidad;
@@ -195,6 +205,10 @@ class Jugador extends Modelo {
     finAnimacionAtaque(){
         this.estado = estados.moviendo;
     }
+
+    /**
+     * Se ejecuta al vencer a Ganon
+     */
     encuentraTrifuerza() {
         this.animacion = this.aEncuentra;
         this.animacion.actualizar();
