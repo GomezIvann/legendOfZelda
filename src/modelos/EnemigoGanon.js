@@ -1,9 +1,10 @@
 class EnemigoGanon extends Enemigo {
     constructor(x, y) {
         super(imagenes.link_oscuro, x, y);
-        this.cadencia = 30; // cadencia de disparo
-        // parado hasta que jugador < distanciaJugador
-        this.velocidadInteligencia = 2;
+        this.cadencia = 31; // cadencia de disparo
+
+        // parado hasta que jugador <= distanciaJugador
+        this.velocidadInteligencia = 1.7;
         this.vy = 0;
         this.vx = 0;
 
@@ -27,7 +28,7 @@ class EnemigoGanon extends Enemigo {
         this.animacion = this.aAbajo;
         this.orientacion = orientaciones.abajo;
         this.vidas = 6; // tiene mas vida que un enemigo normal
-        this.distanciaJugador = 100;
+        this.distanciaJugador = 110;
         this.modoCombate = false;
     }
     actualizar (){
@@ -84,6 +85,8 @@ class EnemigoGanon extends Enemigo {
      * Cuando el jugador se acerca al jefe final, se activa el modo combate
      * Una vez en modo combate le sigue sin cesar
      * (comienza a perseguirle)
+     *
+     * Math.sign devuelve -1 para negativos y 1 para positivos, con 0 devuelve 0
      * @param jugadorX
      * @param jugadorY
      */
@@ -92,15 +95,25 @@ class EnemigoGanon extends Enemigo {
         var diffY = jugadorY - this.y;
 
         if (this.modoCombate) {
-            if (diffX != 0 && diffY != 0) // reducir velocidad en diagonal (si no se hace muy dificil esquivar)
-                this.velocidadInteligencia = 1.5;
+            // cuando la diferencia en la distancia en ambos ejes esta en el rango
+            // [-1, 1] solo se mueve en la direccion del respectivo eje
+            // (sin esto a veces daba problemas de orientacion y por consiguiente de animacion)
 
-            this.vx = Math.sign(diffX) * this.velocidadInteligencia;
-            this.vy = Math.sign(diffY) * this.velocidadInteligencia;
-            this.velocidadInteligencia = 2; // poner de nuevo normal tras calculo
+            if (diffY <= 1 && diffY >= -1) { // distancia x muy pequeña
+                this.vx = Math.sign(diffX) * this.velocidadInteligencia;
+                this.vy = 0;
+            }
+            else if (diffX <= 1 && diffX >= -1) { // distancia y muy pequeña
+                this.vy = Math.sign(diffY) * this.velocidadInteligencia;
+                this.vx = 0;
+            }
+            else { // en el resto de los casos
+                this.vx = Math.sign(diffX) * this.velocidadInteligencia;
+                this.vy = Math.sign(diffY) * this.velocidadInteligencia;
+            }
         }
-        else if (diffX <= this.distanciaJugador && diffX >= -this.distanciaJugador
-            && diffY >= -this.distanciaJugador && diffY <= this.distanciaJugador) {
+        else if (diffX < this.distanciaJugador && diffX > -this.distanciaJugador
+            && diffY > -this.distanciaJugador && diffY < this.distanciaJugador) {
 
             this.modoCombate=true;
             return true;
@@ -110,7 +123,7 @@ class EnemigoGanon extends Enemigo {
     disparar() {
         if (this.cadencia == 0 && this.estado == estados.moviendo && this.modoCombate) {
             this.estado = estados.atacando;
-            this.cadencia = 30;
+            this.cadencia = 31;
             return this.orientacionAtaque();
         }
         else
@@ -120,7 +133,7 @@ class EnemigoGanon extends Enemigo {
     /**
      * Lo sobreescribimos respecto a Enemigo.js
      * Si no esta en modo Combate no pierde vida
-     * @returns {null|*}
+     * @returns {null|item}
      */
     impactado() {
         if(this.modoCombate)

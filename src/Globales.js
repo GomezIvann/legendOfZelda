@@ -24,5 +24,5 @@ orientaciones.abajo = 5;
 
 var mensajesTexto = {};
 mensajesTexto.victoria = "¡Has salvado Hyrule!";
-mensajesTexto.derrota = "Has muerto...";
+mensajesTexto.derrota = "Abre los ojos... Link...";
 mensajesTexto.enemigoModoCombate = "¡Prepárate a morir Link!";

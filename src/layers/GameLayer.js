@@ -56,7 +56,7 @@ class GameLayer extends Layer {
         if (this.jugador.vidas==0) {
             this.pausa = true;
             this.mensaje =
-                new Texto(mensajesTexto.derrota, 480/3.25, 320/2, "", "red");
+                new Texto(mensajesTexto.derrota, 480/5.2, 320/2, "", "red");
             this.iniciar();
         }
         if (this.trifuerzaObtenida){
@@ -111,7 +111,8 @@ class GameLayer extends Layer {
         // -----------------------------ACTUALIZAR-----------------------------
         this.jugador.actualizar();
         for (var i=0; i < this.enemigos.length; i++){
-            if (this.enemigos[i].perseguir(this.jugador.x, this.jugador.y)){
+            // El boss lanza un mensaje cuando la pelea comienza
+            if (this.enemigos[i].perseguir(this.jugador.x, this.jugador.y)) {
                 this.pausa = true;
                 this.mensaje =
                     new Texto(mensajesTexto.enemigoModoCombate, 480/7, 320/2, "","red");
